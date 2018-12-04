@@ -1,0 +1,44 @@
+Abdullah O Alharbi
+CIS 445
+Advanced SQL Queries 
+
+Q1
+	SELECT employees.birth_date, COUNT(*) FROM employees 
+    GROUP BY employees.birth_date 
+    ORDER BY COUNT(*) DESC LIMIT 10;
+
+Q2
+	SELECT employees.emp_no, employees.first_name, employees.last_name, salaries.salary FROM employees 
+    LEFT JOIN salaries ON employees.emp_no = salaries.emp_no 
+    WHERE salaries.to_date > NOW() LIMIT 10; 
+
+Q3
+	SELECT AVG(salaries.salary) FROM salaries WHERE salaries.to_date > NOW() AND salaries.from_date < NOW();
+	
+Q4
+	SELECT employees.emp_no, employees.first_name, employees.last_name, salaries.salary FROM employees 
+    LEFT JOIN salaries ON employees.emp_no = salaries.emp_no 
+    WHERE salaries.to_date > NOW() AND salaries.from_date < NOW()
+    AND salaries.salary > (SELECT AVG(salaries.salary) FROM salaries 
+    WHERE salaries.to_date > NOW() AND salaries.from_date < NOW())
+    ORDER BY salaries.salary ASC, employees.emp_no ASC
+    LIMIT 10;
+    
+Q5
+	SELECT DISTINCT employees.emp_no, employees.first_name, employees.last_name, salaries.salary FROM employees
+    LEFT JOIN salaries ON employees.emp_no = salaries.emp_no 
+    LEFT JOIN dept_emp ON employees.emp_no = dept_emp.emp_no 
+    LEFT JOIN departments ON dept_emp.dept_no = departments.dept_no 
+    WHERE salaries.to_date > NOW() AND salaries.from_date < NOW()
+    LIMIT 20;
+
+Q6
+	SELECT departments.dept_name, AVG(salaries.salary) FROM employees
+    INNER JOIN salaries ON employees.emp_no = salaries.emp_no
+    INNER JOIN dept_emp ON salaries.emp_no = dept_emp.emp_no
+    INNER JOIN departments ON dept_emp.dept_no = departments.dept_no
+    WHERE salaries.to_date > NOW() AND salaries.from_date < NOW()
+    AND dept_emp.to_date > NOW()
+    AND dept_emp.from_date < NOW()
+    GROUP BY departments.dept_name
+    ORDER BY AVG(salaries.salary) ASC;
